@@ -1,0 +1,58 @@
+version: "3"
+
+vars:
+  BINARY_NAME: unofficial-ysap-fmt
+  CMD_PATH: ./cmd/unofficial_ysap_fmt
+  BUILD_DIR: dist
+
+tasks:
+  build:
+    desc: Build the binary for current platform
+    cmds:
+      - go build -o {{.BUILD_DIR}}/{{.BINARY_NAME}} {{.CMD_PATH}}
+
+  install:
+    desc: Build and install binary to $GOPATH/bin
+    cmds:
+      - go install {{.CMD_PATH}}
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf {{.BUILD_DIR}}
+
+  # Version management
+  version:patch:
+    desc: Bump patch version (e.g., v1.0.0 -> v1.0.1)
+    cmds:
+      - git tag $(git describe --tags --abbrev=0 | awk -F. '{print $1"."$2"."$3+1}')
+      - git push --tags
+
+  version:minor:
+    desc: Bump minor version (e.g., v1.0.0 -> v1.1.0)
+    cmds:
+      - git tag $(git describe --tags --abbrev=0 | awk -F. '{print $1"."$2+1".0"}')
+      - git push --tags
+
+  version:major:
+    desc: Bump major version (e.g., v1.0.0 -> v2.0.0)
+    cmds:
+      - git tag $(git describe --tags --abbrev=0 | awk -F. '{print $1+1".0.0"}')
+      - git push --tags
+
+  # releases
+  release:local:
+    desc: Build release binaries locally without publishing
+    cmds:
+      - goreleaser release --snapshot --clean
+
+  release:
+    desc: Create and publish a release (requires GITHUB_TOKEN)
+    deps: [clean]
+    cmds:
+      - goreleaser release --clean
+
+  release:check:
+    desc: Check goreleaser config
+    cmds:
+      - goreleaser check
