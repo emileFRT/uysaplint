@@ -19,12 +19,12 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: 1.24
+          cache: true # keeps gobin full
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          distribution: goreleaser
-          version: "~> v2"
-          args: release --clean
+      - name: Install Task
+        uses: go-task/setup-task@v1
+
+      - name: release
+        run: task release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

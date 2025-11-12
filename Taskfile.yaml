@@ -13,6 +13,8 @@ tasks:
 
   install:
     desc: Build and install binary to $GOPATH/bin
+    status:
+      - goreleaser --version >/dev/null 2>&1 # exit 0 iif cmd exists
     cmds:
       - go install {{.CMD_PATH}}
 
@@ -23,18 +25,21 @@ tasks:
 
   # Version management
   version:patch:
+    deps: [build]
     desc: Bump patch version (e.g., v1.0.0 -> v1.0.1)
     cmds:
       - git tag $(git describe --tags --abbrev=0 | awk -F. '{print $1"."$2"."$3+1}')
       - git push --tags
 
   version:minor:
+    deps: [build]
     desc: Bump minor version (e.g., v1.0.0 -> v1.1.0)
     cmds:
       - git tag $(git describe --tags --abbrev=0 | awk -F. '{print $1"."$2+1".0"}')
       - git push --tags
 
   version:major:
+    deps: [build]
     desc: Bump major version (e.g., v1.0.0 -> v2.0.0)
     cmds:
       - git tag $(git describe --tags --abbrev=0 | awk -F. '{print $1+1".0.0"}')
@@ -48,7 +53,7 @@ tasks:
 
   release:
     desc: Create and publish a release (requires GITHUB_TOKEN)
-    deps: [clean]
+    deps: [clean, install:goreleaser]
     cmds:
       - goreleaser release --clean
 
@@ -56,3 +61,8 @@ tasks:
     desc: Check goreleaser config
     cmds:
       - goreleaser check
+
+  install:goreleaser:
+    desc: uses go to install latest goreleaser
+    cmds:
+      - go install github.com/goreleaser/goreleaser/v2@latest
