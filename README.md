@@ -1,46 +1,25 @@
-# unofficial-ysap-fmt
+# unofficial ysap linter
 
 Bash linter and formatter enforcing the [ysap.sh style guide](https://style.ysap.sh).
 
-WARNING: experimental, needs testing, issues welcome
+WARNING:  **WIP** experimental, needs testing, issues welcome
 
 ## Installation
 
 ```bash
-go install github.com/emileFRT/github.com/emileFRT/unofficial-ysap-fmt/cmd/unofficial_ysap_fmt@latest
+go install github.com/emileFRT/uysaplint/cmd/ysaplint@latest
 ```
 
 ## Usage
 
 ```bash
 # Format to stdout
-unofficial-ysap-fmt script.sh
-
-# Format in-place
-unofficial-ysap-fmt -i script.sh
+ysaplint fmt script.sh
 
 # Lint only
-unofficial-ysap-fmt lint script.sh
+ysaplint script.sh
 
-# With shfmt integration (recommended)
-unofficial-ysap-fmt -s script.sh
-
-# Disable specific rules
-unofficial-ysap-fmt -d eval-usage,useless-cat script.sh
 ```
-
-## Options
-
-| Flag | Description |
-|------|-------------|
-| `-i, --inplace` | Edit file in place |
-| `-s, --shfmt` | Run shfmt formatter |
-| `-d, --disable` | Disable rules (comma-separated) |
-| `--binary-next-line` | shfmt: binary ops at start of next line |
-| `--no-switch-case-indent` | shfmt: don't indent switch cases |
-| `--no-space-redirects` | shfmt: don't space after redirects |
-| `--keep-padding` | shfmt: keep padding |
-| `--func-next-line` | shfmt: function brace on next line |
 
 ## Rules
 
@@ -65,13 +44,13 @@ Those are my extraction/understanding of the [ysap.sh style guide](https://style
 | `var-naming` | ❌ | warning | Use lowercase variable names |
 | `declaration` | ✅ | warning | Don't use `readonly` or `declare -i` |
 
-## Why Some Rules Aren't Auto-Fixed
+## Why so few rules support formatting
 
-Short answer: either it might change the script behaviour (ex: removing `set -e`, substituing `[` to `[[`), or it is "complex" and i can't be bothered for now (PR & issues/discussion welcome)
+Short answer: either it might change the script behaviour (ex: removing `set -e`, substituing `[` to `[[`), or it is somewhat hard t implement and i can't be bothered for now (issues discussion welcome if needed/implementation proposal)
 
-## Why in Go (and not Bash)
+## Why in Go (and not Bash or <insert lang>...)
 
-Leveraging `mvdan.cc/sh/v3` AST walk is straight forward and clean. Unlike the others option i thought about (and yeah, i use `shfmt)
+Leveraging `mvdan.cc/sh/v3` AST walk is straight forward, clean and almost perfectly complete. Unlike the others options i thought about.
 
 ## Caveats
 

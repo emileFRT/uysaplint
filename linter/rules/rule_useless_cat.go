@@ -1,12 +1,12 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
-func CheckUselessCat(l *linter.Linter, node syntax.Node) {
+func CheckUselessCat(l linter.Linter, node syntax.Node) {
 	bc, ok := node.(*syntax.BinaryCmd)
 	if !ok || bc.Op != syntax.Pipe {
 		return

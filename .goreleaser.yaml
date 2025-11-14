@@ -8,9 +8,9 @@ before:
     - go mod vendor
 
 builds:
-  - id: unofficial-ysap-fmt
-    main: ./cmd/unofficial_ysap_fmt
-    binary: unofficial-ysap-fmt
+  - id: uysaplint
+    main: ./cmd/ysaplint
+    binary: ysaplint
     env:
       - CGO_ENABLED=0
     goos:

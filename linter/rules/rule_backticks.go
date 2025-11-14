@@ -1,13 +1,13 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
 // Backticks
-func CheckBackticks(l *linter.Linter, node syntax.Node) {
+func CheckBackticks(l linter.Linter, node syntax.Node) {
 	cs, ok := node.(*syntax.CmdSubst)
 	if ok && cs.Backquotes {
 		pos := cs.Pos()
@@ -20,12 +20,11 @@ func CheckBackticks(l *linter.Linter, node syntax.Node) {
 	}
 }
 
-func FixBackticks(l *linter.Linter, node syntax.Node) bool {
+func FixBackticks(l linter.Linter, node syntax.Node) {
 	cs, ok := node.(*syntax.CmdSubst)
 	if !ok || !cs.Backquotes {
-		return false
+		return
 	}
 	cs.Backquotes = false
 	l.AddViolation(cs.Pos(), RuleBackticks, "Converted backticks to $()", "error", true)
-	return true
 }

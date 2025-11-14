@@ -1,12 +1,12 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
-func CheckParsingLs(l *linter.Linter, node syntax.Node) {
+func CheckParsingLs(l linter.Linter, node syntax.Node) {
 	fc, ok := node.(*syntax.ForClause)
 	if !ok {
 		return

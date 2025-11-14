@@ -1,4 +1,4 @@
-module github.com/emileFRT/unofficial-ysap-fmt
+module github.com/emileFRT/ysaplint
 
 go 1.24
 

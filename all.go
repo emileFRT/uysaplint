@@ -1,14 +1,35 @@
-package unofficialysapfmt
+package ysaplint
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
-	"github.com/emileFRT/unofficial-ysap-fmt/rules"
+	"github.com/emileFRT/ysaplint/linter"
+	"github.com/emileFRT/ysaplint/linter/rules"
 )
 
-func FormatAll(l *linter.Linter) {
-	l.WalkRules(rules.All, true)
+func registerRules(l linter.Linter) {
+	for name, check := range rules.Checkers {
+		l.AddLintRule(name, check)
+	}
+	for name, fix := range rules.Fixers {
+		l.AddFix(name, fix)
+	}
 }
 
-func LintAll(l *linter.Linter) {
-	l.WalkRules(rules.All, false)
+func FormatAll(l linter.Linter) {
+	registerRules(l)
+
+	for _, fix := range rules.NonWalkFixers {
+		fix(l)
+	}
+
+	l.Lint(true)
+}
+
+func LintAll(l linter.Linter) {
+	registerRules(l)
+
+	for _, check := range rules.NonWalkChecker {
+		check(l)
+	}
+
+	l.Lint(false)
 }

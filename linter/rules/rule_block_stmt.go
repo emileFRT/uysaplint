@@ -1,12 +1,12 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
-func CheckBlockStmt(l *linter.Linter, node syntax.Node) {
+func CheckBlockStmt(l linter.Linter, node syntax.Node) {
 	switch n := node.(type) {
 	case *syntax.IfClause:
 		if hasNewline(n.Cond, n.ThenPos) {

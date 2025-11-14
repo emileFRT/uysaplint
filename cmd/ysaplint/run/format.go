@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	unofficialysapfmt "github.com/emileFRT/unofficial-ysap-fmt"
-
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint"
+	"github.com/emileFRT/ysaplint/linter/impl"
 
 	"github.com/spf13/cobra"
 )
@@ -25,31 +24,26 @@ func Format(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("cannot use -i flag with stdin")
 	}
 
-	l, err := linter.NewLinter(content, disabled)
+	l, err := impl.NewLinter(content, disabled)
 	if err != nil {
 		return fmt.Errorf("parse error: %v", err)
 	}
 
-	unofficialysapfmt.FormatAll(l)
-	hasErrors := printViolations(l.Violations, filename)
-	output, err := l.GetContent()
-	if err != nil {
-		return fmt.Errorf("print error: %v", err)
-	}
-
-	if useShfmt && !l.Disabled["shfmt"] {
-		if formatted, err := runShfmt(output, cmd); err != nil {
+	ysaplint.FormatAll(l)
+	hasErrors := hasError(l.GetViolations())
+	if useShfmt {
+		if formatted, err := runShfmt(l.GetContent(), cmd); err != nil {
 			fmt.Fprintf(os.Stderr, "[shfmt] %v (continuing without shfmt)\n", err)
 		} else {
-			output = formatted
+			l.SetContent(formatted)
 		}
 	}
 
 	if inPlace {
-		return os.WriteFile(filename, []byte(output), 0644)
+		return os.WriteFile(filename, []byte(l.GetContent()), 0644)
 	}
-	fmt.Print(output)
 
+	fmt.Print(l.GetContent())
 	if hasErrors {
 		os.Exit(1)
 	}

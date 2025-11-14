@@ -1,13 +1,13 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
 // Declarations
-func CheckDeclaration(l *linter.Linter, node syntax.Node) {
+func CheckDeclaration(l linter.Linter, node syntax.Node) {
 	dc, ok := node.(*syntax.DeclClause)
 	if !ok {
 		return
@@ -24,10 +24,10 @@ func CheckDeclaration(l *linter.Linter, node syntax.Node) {
 	}
 }
 
-func FixDeclaration(l *linter.Linter, node syntax.Node) bool {
+func FixDeclaration(l linter.Linter, node syntax.Node) {
 	dc, ok := node.(*syntax.DeclClause)
 	if !ok || dc.Variant.Value != "declare" {
-		return false
+		return
 	}
 	// TODO: size preshot
 	var newArgs []*syntax.Assign
@@ -39,10 +39,9 @@ func FixDeclaration(l *linter.Linter, node syntax.Node) bool {
 			modified = true
 		}
 	}
-	if modified {
-		dc.Args = newArgs
-		l.AddViolation(dc.Pos(), RuleDeclaration, "Removed 'declare -i'", "warning", true)
-		return true
+	if !modified {
+		return
 	}
-	return false
+	dc.Args = newArgs
+	l.AddViolation(dc.Pos(), RuleDeclaration, "Removed 'declare -i'", "warning", true)
 }

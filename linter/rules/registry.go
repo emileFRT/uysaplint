@@ -1,18 +1,10 @@
 package rules
 
 import (
-	"maps"
-	"slices"
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
-
-	"mvdan.cc/sh/v3/syntax"
+	"github.com/emileFRT/ysaplint/linter"
 )
 
-type Checker func(*linter.Linter, syntax.Node)
-type Fixer func(*linter.Linter, syntax.Node) bool
-
-var Checkers = map[string]Checker{
-	RuleShebang:     CheckShebang,
+var Checkers = map[string]linter.Checker{
 	RuleSemicolon:   CheckSemicolon,
 	RuleFunctionKw:  CheckFunctionKw,
 	RuleTestCmd:     CheckTestCmd,
@@ -25,17 +17,23 @@ var Checkers = map[string]Checker{
 	RuleNoEval:      CheckNoEval,
 	RuleNoSetE:      CheckNoSetE,
 	RuleBlockStmt:   CheckBlockStmt,
-	RuleBlanklines:  CheckBlanklines,
 	RuleVarNaming:   CheckVarNaming,
 	RuleDeclaration: CheckDeclaration,
 }
 
-var Fixers = map[string]Fixer{
-	RuleShebang:     FixShebang,
+var Fixers = map[string]linter.Fixer{
 	RuleSemicolon:   FixSemicolon,
 	RuleFunctionKw:  FixFunctionKw,
 	RuleBackticks:   FixBackticks,
 	RuleDeclaration: FixDeclaration,
 }
 
-var All = slices.Collect(maps.Keys(Checkers))
+var NonWalkChecker = map[string]func(linter.Linter){
+	RuleShebang:    CheckShebang,
+	RuleBlanklines: CheckBlanklines,
+}
+
+var NonWalkFixers = map[string]func(linter.Linter){
+	RuleShebang:    FixShebang,
+	RuleBlanklines: FixBlankLines,
+}

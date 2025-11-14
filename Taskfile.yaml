@@ -1,8 +1,8 @@
 version: "3"
 
 vars:
-  BINARY_NAME: unofficial-ysap-fmt
-  CMD_PATH: ./cmd/unofficial_ysap_fmt
+  BINARY_NAME: ysaplint
+  CMD_PATH: ./cmd/ysaplint
   BUILD_DIR: dist
 
 tasks:

@@ -1,13 +1,13 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
 // Semicolons
-func CheckSemicolon(l *linter.Linter, node syntax.Node) {
+func CheckSemicolon(l linter.Linter, node syntax.Node) {
 	stmt, ok := node.(*syntax.Stmt)
 	if !ok || !stmt.Semicolon.IsValid() || isControlStruct(stmt) {
 		return
@@ -15,12 +15,11 @@ func CheckSemicolon(l *linter.Linter, node syntax.Node) {
 	l.AddViolation(stmt.Semicolon, RuleSemicolon, "Avoid semicolons unless required in control statements", "warning", false)
 }
 
-func FixSemicolon(l *linter.Linter, node syntax.Node) bool {
+func FixSemicolon(l linter.Linter, node syntax.Node) {
 	stmt, ok := node.(*syntax.Stmt)
 	if !ok || !stmt.Semicolon.IsValid() || isControlStruct(stmt) {
-		return false
+		return
 	}
 	stmt.Semicolon = syntax.Pos{}
 	l.AddViolation(stmt.Pos(), RuleSemicolon, "Removed unnecessary semicolon", "warning", true)
-	return true
 }

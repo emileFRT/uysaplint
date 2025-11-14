@@ -1,7 +1,7 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
@@ -13,7 +13,7 @@ func isQuotedWord(w *syntax.Word) bool {
 }
 
 // Unquoted Variables
-func CheckUnquotedVar(l *linter.Linter, node syntax.Node) {
+func CheckUnquotedVar(l linter.Linter, node syntax.Node) {
 	w, ok := node.(*syntax.Word)
 	if !ok || isQuotedWord(w) || isSimpleLiteral(w) {
 		return

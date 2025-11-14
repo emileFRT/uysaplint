@@ -1,13 +1,13 @@
 package rules
 
 import (
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
 // Function Keyword
-func CheckFunctionKw(l *linter.Linter, node syntax.Node) {
+func CheckFunctionKw(l linter.Linter, node syntax.Node) {
 	fd, ok := node.(*syntax.FuncDecl)
 	if ok && fd.RsrvWord {
 		// Use function name position for more precise error location
@@ -19,12 +19,11 @@ func CheckFunctionKw(l *linter.Linter, node syntax.Node) {
 	}
 }
 
-func FixFunctionKw(l *linter.Linter, node syntax.Node) bool {
+func FixFunctionKw(l linter.Linter, node syntax.Node) {
 	fd, ok := node.(*syntax.FuncDecl)
 	if !ok || !fd.RsrvWord {
-		return false
+		return
 	}
 	fd.RsrvWord = false
 	l.AddViolation(fd.Pos(), RuleFunctionKw, "Converted to name() syntax", "error", true)
-	return true
 }

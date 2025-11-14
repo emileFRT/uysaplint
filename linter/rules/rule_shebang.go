@@ -3,16 +3,14 @@ package rules
 import (
 	"strings"
 
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 
 	"mvdan.cc/sh/v3/syntax"
 )
 
-func CheckShebang(l *linter.Linter, node syntax.Node) {
-	if l.Disabled[RuleShebang] {
-		return
-	}
-	lines := strings.Split(l.Content, "\n")
+func CheckShebang(l linter.Linter) {
+	println("in shebang")
+	lines := strings.Split(l.GetContent(), "\n")
 	if len(lines) > 0 && strings.HasPrefix(lines[0], "#!") {
 		if !strings.Contains(lines[0], "#!/usr/bin/env bash") && !strings.Contains(lines[0], "#!/bin/bash") {
 			l.AddViolation(syntax.Pos{}, RuleShebang, "Use '#!/usr/bin/env bash' for portability", "warning", false)
@@ -22,13 +20,10 @@ func CheckShebang(l *linter.Linter, node syntax.Node) {
 	}
 }
 
-func FixShebang(l *linter.Linter, node syntax.Node) bool {
-	if l.Disabled[RuleShebang] {
-		return false
-	}
-	lines := strings.Split(l.Content, "\n")
+func FixShebang(l linter.Linter) {
+	lines := strings.Split(l.GetContent(), "\n")
 	if len(lines) == 0 {
-		return false
+		return
 	}
 	modified := false
 	if strings.HasPrefix(lines[0], "#!") {
@@ -40,9 +35,9 @@ func FixShebang(l *linter.Linter, node syntax.Node) bool {
 		lines = append([]string{"#!/usr/bin/env bash"}, lines...)
 		modified = true
 	}
-	if modified {
-		l.Content = strings.Join(lines, "\n")
-		return true
+	if !modified {
+		return
 	}
-	return false
+	l.SetContent(strings.Join(lines, "\n"))
+
 }

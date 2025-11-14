@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/emileFRT/unofficial-ysap-fmt/linter"
+	"github.com/emileFRT/ysaplint/linter"
 )
 
 func readInput(args []string) (string, string, error) {
@@ -23,20 +23,14 @@ func readInput(args []string) (string, string, error) {
 	return string(content), args[0], nil
 }
 
-func printViolations(v []linter.Violation, filename string) bool {
-	if len(v) == 0 {
-		return false
-	}
-	fmt.Fprintln(os.Stderr, "[unofficial-ysap-fmt] Found violations:")
+func hasError(v []linter.Violation) bool {
 	hasErrors := false
+
 	for _, v := range v {
-		if !v.Fixed {
-			fmt.Fprintf(os.Stderr, "  %s:%d:%d: [%s] %s (%s)\n",
-				filename, v.Line, v.Col, v.Severity, v.Msg, v.Rule)
-			if v.Severity == "error" {
-				hasErrors = true
-			}
+		if !v.Fixed && v.Severity == "error" {
+			hasErrors = true
 		}
 	}
+
 	return hasErrors
 }
